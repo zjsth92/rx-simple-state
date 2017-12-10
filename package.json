@@ -1,0 +1,35 @@
+{
+  "name": "rx-simple-state",
+  "version": "1.0.0",
+  "description": "Redux like simple state manager with rxjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node_modules/.bin/babel src --out-dir lib",
+    "clean": "rm -rf lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SHITianhao/rx-simple-state.git"
+  },
+  "keywords": [
+    "rxjs",
+    "state",
+    "redux"
+  ],
+  "author": "sth",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SHITianhao/rx-simple-state/issues"
+  },
+  "homepage": "https://github.com/SHITianhao/rx-simple-state#readme",
+  "dependencies": {
+    "rxjs": "^5.5.5"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1"
+  }
+}
