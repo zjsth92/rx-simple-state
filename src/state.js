@@ -49,7 +49,6 @@ export const connectReact = (React, Component, mapToState) => {
 
 export const combineReducers = (reducers) => {
     return (state = {}, action) => {
-        console.log('combineReducers');
         let keys = Object.keys(reducers);
         let hasChanged = false;
         let nextState = {};
