@@ -1,1 +1,1 @@
-module.exports = require('./src/state.js')(require('rxjs/Rx'));
+module.exports = require('./lib/state.js')(require('rxjs/Rx'));

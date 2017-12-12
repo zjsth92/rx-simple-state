@@ -81,8 +81,58 @@ export const login = () => {
 
 ```
 
+## Wechat Mini Program - 微信小程序
+微信小程序不支持npm，因此需要手动导入Rxjs
+
+### Import RxJs lib - 导入 RxJs 依赖
+复制**wx**文件夹下的```Rx.5.5.5.min.js```到小程序目录下
+
+原始的Rx无法顺利导入小程序，此文件在头部添加了一段代码
+```js
+var window={Object,setTimeout,clearTimeout};window.window = window;
+```
+
+### Installation - 安装
+复制 lib/state.js 到小程序目录下
+
+```
+wxapp
+- app.js
+- app.json
+- ap.wxss
+---- lib
+------- Rx.5.5.5.min.js
+------- state.js
+---- pages
+---- utils
+```
+
+### Init RxJs context - 初始化 RxJx 环境
+```js
+//app.js
+const Rx = require('./libs/Rx.5.5.5.min.js');
+const createRxSimpleState = require('./libs/state.js');
+const RxSimpleState = createRxSimpleState(Rx);
+App({
+    // cache it for quick access from other pages
+    rxstate: RxSimpleState
+})
+//index.js connect to store
+const app = getApp();
+const pageConfig = {
+    data: {},
+    onLoad: function() {...},
+}
+const mapToData = (state) => {
+  return({
+    userInfo: state.user.userInfo
+  })
+}
+// use connectWxPage
+Page(app.rxstate.connectWxPage(pageConfig, mapToData))
+```
+
 ## TODO
-* Support Wechat Mini Program
 * Test
 * Custom middleware
 
