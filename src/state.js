@@ -1,26 +1,33 @@
 let SingleTon = undefined;
 let LastRxContext = undefined;
+const INIT_ACTION = {
+    type: 'RxSimpleState/INIT'
+}
 
 const createRxSimpleState = (Rx) => {
-    if(SingleTon && LastRxContext) {
-        if(LastRxContext === Rx) {
+    if (SingleTon && LastRxContext) {
+        if (LastRxContext === Rx) {
             return SingleTon;
         } else {
-            if(process.env.NODE_ENV !== 'production') console.warn('Changing RxJS Context will create a new store');
+            if (process.env.NODE_ENV !== 'production') console.warn('Changing RxJS Context will create a new store');
         }
     }
-    const store = new Rx.ReplaySubject(1);
+    const store = new Rx.BehaviorSubject(1);
     const subj = new Rx.Subject();
 
     const createStore = (combinedReducer, preloadState = undefined) => {
+        if(typeof preloadState === 'undefined') {
+            preloadState = combinedReducer(undefined, INIT_ACTION);
+        }
         subj
             .startWith(preloadState)
             .scan(combinedReducer)
             .subscribe(store);
+        dispatch(INIT_ACTION);
         return store;
     }
 
-     const connect = (mapToState) => {
+    const connect = (mapToState) => {
         store.subscribe({
             next: (state) => {
                 if (typeof state !== 'undefined') {
@@ -34,7 +41,12 @@ const createRxSimpleState = (Rx) => {
     const connectReact = (React, Component, mapToState) => {
         class ConnectedComponent extends React.Component {
 
-            componentDidMount() {
+            constructor(props) {
+                super(props)
+                this.state = mapToState(store.getValue());
+            }
+
+            componentWillMount() {
                 store.subscribe({
                     next: (state) => {
                         if (typeof state !== 'undefined') {
@@ -73,6 +85,8 @@ const createRxSimpleState = (Rx) => {
                 _onLoad.call(this, options)
             }
         }
+        // init page data
+        pageConfig.data = Object.assign(pageConfig.data, {...mapToData(store.getValue())})
         return Object.assign(pageConfig, { onLoad });
     }
 
